@@ -22,10 +22,10 @@ function GetReqHTML (req, sync = true, id){//req est un objet qui contient le no
 
 function PostReqHTML (req, sync = true, id,...args){//en cas de post
 	GetReqHTML(req,sync,id);
-	this.xhr.send(
-	for (let i = 0 ; i<args.length-1;i+2 ){
-		args[i] + args[i+1];
+	let tab;
+	for (let i = 0 ; i<args.length;i i++ ){
+		tab = tab + args[i];
 	}
-	);
+	this.xhr.send(tab);
 
 }
