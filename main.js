@@ -1,3 +1,5 @@
+var path = "http://10.34.168.140/";
+
 var controller = new Leap.Controller({
                          enableGestures: true,
                          frameEventName: 'animationFrame'
@@ -63,13 +65,25 @@ function GetSend (url,id,password){
 	xhr.send();
 	if (xhr.status < 400) {  
 		//le serveur a réussi à traiter la requête 
-        console.log(xhrHTML); 
+        console.log(xhrHTML.value); 
     } else { 
         //affichage des informations sur l'échec du traitement de la requête 
         console.error(xhrHTML.status + " " + xhrHTML.statusText); 
     }
 
     return xhr;
+}
+
+function LinkURLMotion (url,id,password,obj,fct){
+	let urlFunctionObj = {"tv" : { "on":"api/bravia/power/on","off":"api/bravia/power/off", "tf1" : "api/tv/channel/1", "fr2" : "api/tv/channel/2", "fr3" : "api/tv/channel/3", "m6" : "api/tv/channel/6", "arte" : "api/tv/channel/7", "c8" : "api/tv/channel/8", "w9" : "api/tv/channel/9", "bfm" : "api/tv/channel/15"}, "light1" : {"on":"function1","off":"function2"},"light2" : {"on":"api/lights/power/2/on","off":"api/lights/power/2/off"}};
+
+	if(obj in urlFunctionObj){
+		if(fct in urlFunctionObj[obj]){
+			let urlTempo = url+urlFunctionObj[obj].fct;
+			let xhr = GetSend(urlTempo,id,password);
+		}
+	}
+	return xhr;
 }
 
 var taille_liste_gestes = 0;
