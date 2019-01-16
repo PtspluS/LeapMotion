@@ -3,15 +3,25 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="CSS.css"></style>
 	<title>LeapMotion urbawood</title>
-	<link rel="stylesheet" href="">
 </head>
 <body>
-	
+	<div id="lampesDisplay">
+	<div id="icon">
+	  </div>
+
+	  <div id="volume">
+	   <p><progress id="avancement" value="50" max="100"></progress></p>
+	      </div>
+	    <div id="chaine">
+	      </div>
+
+	      </div>
 </body>
 <!--Templates-->
 <script type="text/template" id="menuStart">
-
+	
 </script>
 
 <script type="text/template" id="menuTv">
@@ -27,6 +37,20 @@
 </script>
 <script type="text/template"></script>
 <!--scripts-->
+<script>
+	var xhrHTML = new XMLHttpRequest();
+	xhrHTML.open("GET","http://localhost:8080/debug.html",true);
+	xhrHTML.send(null);
+	if (xhrHTML.status < 400) { 
+		//le serveur a réussi à traiter la requête
+        console.log(xhrHTML.responseText);
+    } else {
+        //affichage des informations sur l'échec du traitement de la requête
+        console.error(xhrHTML.status + " " + xhrHTML.statusText);
+    }
+</script>
 <script src="http://code.jquery.com/jquery.js"></script>
+<script src="blooming-menu.min.js"></script>
+<script src="url.js"></script>
 <script src="menu.js"></script>
 </html>
