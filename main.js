@@ -4,6 +4,7 @@ var controller = new Leap.Controller({
                          });
 
 var dispMains = document.getElementById('mains');
+var dispAction = document.getElementById('action');
 var dispType = document.getElementById('type');
 var dispForme = document.getElementById('forme');
 var dispMouvement = document.getElementById('mouvement');
@@ -37,7 +38,12 @@ var liste_gestes = [
 	["JUL"],
 	["DoigtdHonneur"],
 	["PoingHautFerme","PoingHautOuvert"],
-	["PoingHautOuvert","PoingHautFerme"]
+	["PoingHautOuvert","PoingHautFerme"],
+	["PoussePlat"],
+	["CoupDePoingGauche","CoupDePoingDroit"],
+	["CoupDePoingDroit","CoupDePoingGauche"],
+	["SwipeDroit1","SwipeDroit2"],
+	["SwipeGauche1","SwipeGauche2"]
 ];
 var liste_gestes_noms = {
 
@@ -60,10 +66,10 @@ var formeMain = function(main){
 		fre = "Pointe";
 	}else if(main.indexFinger.extended && main.middleFinger.extended && !main.ringFinger.extended && !main.pinky.extended && main.thumb.extended){
 		fre = "Pistolet";
-	}else if(!main.indexFinger.extended && main.middleFinger.extended && !main.ringFinger.extended && !main.pinky.extended && !main.thumb.extended){
-		fre = "Honneur";
 	}else if(main.grabStrength >= 1){
 		fre = "Poing";
+	}else if(main.pinchStrength >= 0.95 ){
+        fre = "Pincer";
 	}else{
 		fre = "";
 	}
@@ -106,6 +112,17 @@ controller.on('frame', function(frame){
 	
 	main1 = undefined;
 	main2 = undefined;
+		
+	type1 = "";
+	type2 = "";
+	
+	// Forme
+	forme1 = "";
+	forme2 = "";
+	
+	// Mouvement	
+	mouvement1 = "";
+	mouvement2 = "";
 	
 	if(frame.hands.length >= 2){
 		main1 = frame.hands[0];
@@ -132,6 +149,12 @@ controller.on('frame', function(frame){
 		// Geste
 		if( (forme1 == "Pistolet" || forme1 == "Pointe") && ( main1.palmNormal[2] > 0.5 || main1.palmNormal[1] > 0.5 ) && (forme2 == "Pistolet" || forme2 == "Pointe") && ( main2.palmNormal[2] > 0.5 || main2.palmNormal[1] > 0.5 ) && main1.palmPosition[0] < main2.palmPosition[0] && mouvement1 == "Vers la droite" && mouvement2 == "Vers la gauche" ){
 			geste1 = "JUL";
+		}else if( forme1 == "Poing" && forme2 == "Poing" && ( main1.palmNormal[0] > 0.6 || main1.palmNormal[1] < -0.6 ) && ( main2.palmNormal[0] < -0.6 || main2.palmNormal[1] < -0.6 ) && mouvement1 == "En avant" && mouvement2 == "" ){
+			geste1 = "CoupDePoingGauche";
+		}else if( forme1 == "Poing" && forme2 == "Poing" && ( main1.palmNormal[0] > 0.6 || main1.palmNormal[1] < -0.6 ) && ( main2.palmNormal[0] < -0.6 || main2.palmNormal[1] < -0.6 ) && mouvement1 == "" && mouvement2 == "En avant" ){
+			geste1 = "CoupDePoingDroit";
+		}else if( forme1 == "Pincer" && forme2 == "Pincer" && main1.palmPosition[0] < main2.palmPosition[0]){
+			geste1 = "PincerEtirement";
 		}else{
 			geste1 = "";
 		}
@@ -150,16 +173,28 @@ controller.on('frame', function(frame){
 		
 		
 		// Geste
-		if(forme1 == "Main plate" && main1.palmNormal[2] < -0.7 && main1.direction[0] < -0.25 && main1.direction[1] > 0.3){
+		if(forme1 == "Main plate" && main1.palmNormal[2] < -0.8 && main1.direction[1] > 0.8 && mouvement1 == "En avant"){
+			geste1 = "PoussePlat";
+		}else if(forme1 == "Main plate" && main1.palmNormal[2] < -0.7 && main1.direction[0] < -0.25 && main1.direction[1] > 0.3 && mouvement1 == ""){
 			geste1 = "PalmeFaceGauche";
-		}else if(forme1 == "Main plate" && main1.palmNormal[2] < -0.7 && main1.direction[0] > 0.25 && main1.direction[1] > 0.3){
+		}else if(forme1 == "Main plate" && main1.palmNormal[2] < -0.7 && main1.direction[0] > 0.25 && main1.direction[1] > 0.3 && mouvement1 == ""){
 			geste1 = "PalmeFaceDroite";
 		}else if(forme1 == "Metal" && main1.direction[2] < -0.7){
 			geste1 = "MetalFront";
+		}else if(forme1 == "Honneur"){
+			geste1 = "DoigtdHonneur";
 		}else if(forme1 == "Poing" && main1.palmNormal[1] > 0.8 && main1.direction[2] < -0.8){
 			geste1 = "PoingHautFerme";
 		}else if(forme1 == "Main plate" && main1.palmNormal[1] > 0.8 && main1.direction[2] < -0.8){
 			geste1 = "PoingHautOuvert";
+		}else if(forme1 == "Main plate" && (main1.palmNormal[0] < -0.8 || main1.palmNormal[0] > 0.8) && main1.direction[2] < -0.8 && main1.palmPosition[0] > 50 && mouvement1 == "Vers la gauche"){
+			geste1 = "SwipeGauche1";
+		}else if(forme1 == "Main plate" && (main1.palmNormal[0] < -0.8 || main1.palmNormal[0] > 0.8) && main1.direction[2] < -0.8 && main1.palmPosition[0] < -50 && mouvement1 == "Vers la gauche"){
+			geste1 = "SwipeGauche2";
+		}else if(forme1 == "Main plate" && (main1.palmNormal[0] < -0.8 || main1.palmNormal[0] > 0.8) && main1.direction[2] < -0.8 && main1.palmPosition[0] < -50 && mouvement1 == "Vers la droite"){
+			geste1 = "SwipeDroit1";
+		}else if(forme1 == "Main plate" && (main1.palmNormal[0] < -0.8 || main1.palmNormal[0] > 0.8) && main1.direction[2] < -0.8 && main1.palmPosition[0] > 50 && mouvement1 == "Vers la droite"){
+			geste1 = "SwipeDroit2";
 		}else{
 			geste1 = "";
 		}
@@ -197,25 +232,44 @@ controller.on('frame', function(frame){
 	
 	if(g_dynamique != ""){
 		if(g_dynamique == ["PalmeFaceGauche","PalmeFaceDroite","PalmeFaceGauche"].toString()){
-			alert("Action coucou");
-		}else if(g_dynamique == "MetalFront"){
-			alert("Action metal");
+			dispAction.innerText = "Action Coucou";
 		}else if(g_dynamique == "JUL"){
-			alert("OVNI");
-		}else if(g_dynamique == "DoigtdHonneur"){
-			alert("-1 de pureté");
+			dispAction.innerText = "OVNI";
+		}else if(g_dynamique == "PoussePlat"){
+			dispAction.innerText = "Action Poussee";
 		}else if(g_dynamique == ["PoingHautFerme","PoingHautOuvert"]){
-			alert("Action Allume");
+			dispAction.innerText = "Action Allume";
 		}else if(g_dynamique == ["PoingHautOuvert","PoingHautFerme"]){
-			alert("Action Eteindre");
+			dispAction.innerText = "Action Eteindre";
+		}else if(g_dynamique == ["CoupDePoingGauche","CoupDePoingDroit"].toString() || g_dynamique == ["CoupDePoingDroit","CoupDePoingGauche"].toString()){
+			dispAction.innerText = "Action Rocky";
+		}else if(g_dynamique == ["SwipeGauche1","SwipeGauche2"].toString()){
+			dispAction.innerText = "Action Swipe Gauche";
+		}else if(g_dynamique == ["SwipeDroit1","SwipeDroit2"].toString()){
+			dispAction.innerText = "Action Swipe Droit";
 		}
 		
 		/*for(let i = 0; i < previous1.length; i++){ // Reinit du buffer
 			previous1[i] = "";
 		}*/
-	}else{
-	
 	}
+	
+	// Gestes Analogiques
+	if(geste1 == "PincerEtirement"){
+		let temp = 0;
+		let temp2 = main2.palmPosition[0] - main1.palmPosition[0] - 150;
+		if(temp2 > 0 && temp2 < 400){
+			temp = temp2 / 400 * 100;
+		}else if(temp2 <= 0){
+			temp = 0;
+		}else if(temp2 >= 0){
+			temp = 100;
+		}
+		dispAction.innerText = "Action Etirement : Niveau " + temp + "%";
+	}else if(geste1 == "MetalFront"){
+		dispAction.innerText = "Action Metal : [ " + main1.palmPosition[0] + " , " + main1.palmPosition[1] + "]";
+	}
+	
 	dispType.innerText = type1;
 	dispForme.innerText = forme1;	
 	dispMouvement.innerText = mouvement1;
@@ -227,7 +281,7 @@ controller.on('frame', function(frame){
 	dispGeste.innerText = geste1;
 	
 	dispTest1.innerText = previous1;
-	dispTest2.innerText = main1.grabStrength;
+	dispTest2.innerText = "ouvlie pas";
 });
 
 controller.connect();
