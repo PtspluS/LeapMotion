@@ -70,14 +70,16 @@ var formeMain = function(main){
 		fre = "Poing";
 	}else if(main.pinchStrength >= 0.95 ){
         fre = "Pincer";
-	}else{
+	}else if(!main.thumb.extended && main.indexFinger.extended && main.middleFinger.extended && !main.ringFinger.extended && !main.pinky.extended ){
+		fre = "victory";
+	}else {
 		fre = "";
 	}
 	return fre;
 };
 
 var mouvementMain = function(main){
-	let fre;	
+	let fre;
 	if(main.palmVelocity[0] < -400){
 		fre = "Vers la gauche";
 	}else if(main.palmVelocity[0] > 400){
@@ -105,11 +107,11 @@ var typeMain = function(main){
 	}
 	return fre;
 };
-			
+
 controller.on('frame', function(frame){
 	// Nombre de mains
 	dispMains.innerText = frame.hands.length;
-	
+
 	main1 = undefined;
 	main2 = undefined;
 		
@@ -127,7 +129,7 @@ controller.on('frame', function(frame){
 	if(frame.hands.length >= 2){
 		main1 = frame.hands[0];
 		main2 = frame.hands[1];
-		
+
 		// Type
 		type1 = typeMain(main1);
 		if(type1 == "Main Droite"){
@@ -136,16 +138,16 @@ controller.on('frame', function(frame){
 		}
 		type1 = typeMain(main1);
 		type2 = typeMain(main2);
-		
+
 		// Forme
 		forme1 = formeMain(main1);
 		forme2 = formeMain(main2);
-		
-		// Mouvement	
+
+		// Mouvement
 		mouvement1 = mouvementMain(main1);
 		mouvement2 = mouvementMain(main2);
-		
-		
+
+
 		// Geste
 		if( (forme1 == "Pistolet" || forme1 == "Pointe") && ( main1.palmNormal[2] > 0.5 || main1.palmNormal[1] > 0.5 ) && (forme2 == "Pistolet" || forme2 == "Pointe") && ( main2.palmNormal[2] > 0.5 || main2.palmNormal[1] > 0.5 ) && main1.palmPosition[0] < main2.palmPosition[0] && mouvement1 == "Vers la droite" && mouvement2 == "Vers la gauche" ){
 			geste1 = "JUL";
@@ -158,20 +160,20 @@ controller.on('frame', function(frame){
 		}else{
 			geste1 = "";
 		}
-		
+
 	}else if(frame.hands.length == 1){ // Une main
 		main1 = frame.hands[0];
-		
+
 		// Type
 		type1 = typeMain(main1);
-		
+
 		// Forme
 		forme1 = formeMain(main1);
-		
-		// Mouvement	
+
+		// Mouvement
 		mouvement1 = mouvementMain(main1);
-		
-		
+
+
 		// Geste
 		if(forme1 == "Main plate" && main1.palmNormal[2] < -0.8 && main1.direction[1] > 0.8 && mouvement1 == "En avant"){
 			geste1 = "PoussePlat";
@@ -207,17 +209,17 @@ controller.on('frame', function(frame){
 		forme2 = "";
 		main1 = "";
 		main2 = "";
-		
+
 		geste1 = "";
 	}
 	// Determination gestuelle dynamique si le resultat precedant n'etait pas une fonction
-	
-	
+
+
 	var g_dynamique = ""; // Buffer temporaire
 	if(geste1 != "" && geste1 != previous1[previous1.length-1]){
 		previous1.shift(); // Enleve le premier du tableau
 		previous1.push(geste1);
-		
+
 		for(let i = 0; i < liste_gestes.length; i++){
 			let temp_list = [];
 			for(let k = 0; k < liste_gestes[i].length; k++){
@@ -229,7 +231,7 @@ controller.on('frame', function(frame){
 			}
 		}
 	}
-	
+
 	if(g_dynamique != ""){
 		if(g_dynamique == ["PalmeFaceGauche","PalmeFaceDroite","PalmeFaceGauche"].toString()){
 			dispAction.innerText = "Action Coucou";
@@ -248,7 +250,7 @@ controller.on('frame', function(frame){
 		}else if(g_dynamique == ["SwipeDroit1","SwipeDroit2"].toString()){
 			dispAction.innerText = "Action Swipe Droit";
 		}
-		
+
 		/*for(let i = 0; i < previous1.length; i++){ // Reinit du buffer
 			previous1[i] = "";
 		}*/
@@ -271,15 +273,15 @@ controller.on('frame', function(frame){
 	}
 	
 	dispType.innerText = type1;
-	dispForme.innerText = forme1;	
+	dispForme.innerText = forme1;
 	dispMouvement.innerText = mouvement1;
-	
+
 	dispType2.innerText = type2;
-	dispForme2.innerText = forme2;	
+	dispForme2.innerText = forme2;
 	dispMouvement2.innerText = mouvement2;
-	
+
 	dispGeste.innerText = geste1;
-	
+
 	dispTest1.innerText = previous1;
 	dispTest2.innerText = "ouvlie pas";
 });
