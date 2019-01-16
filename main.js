@@ -72,6 +72,18 @@ function GetSend (url,id,password){
     return xhr;
 }
 
+function LinkURLMotion (url,id,password,obj,fct){
+	let urlFunctionObj = {"tv" : {"function1", "function2"}, "light" : {"function1", "function2"}};
+
+	if(obj in urlFunctionObj){
+		if(fct in urlFunctionObj[obj]){
+			let urlTempo = url+urlFunctionObj[obj].fct;
+			let xhr = GetSend(urlTempo,id,password);
+		}
+	}
+	return xhr;
+}
+
 var taille_liste_gestes = 0;
 for(let i = 0; i < liste_gestes.length; i++){
 	if(liste_gestes[i].length > taille_liste_gestes) taille_liste_gestes = liste_gestes[i].length;
