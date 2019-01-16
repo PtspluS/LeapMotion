@@ -2,6 +2,7 @@ $(function(){
 
 	let listeMenus = ["tv","lampes","cams"];//liste les sous menus pour naviguer dedans
 	let currentMenu = null;//donne le menu où l'on se situe
+	//var blomingMenu = new BlomingMenu();
 
 	function menuDisplay (){
 		let template = $("#menuStart").html();
@@ -77,5 +78,7 @@ $(function(){
 			}
 		}
 	}
+	function fusroda(){
 
+	}
 })
