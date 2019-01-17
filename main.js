@@ -22,6 +22,16 @@ var dispGeste2 = document.getElementById('geste2');
 var dispTest1 = document.getElementById('test1');
 var dispTest2 = document.getElementById('test2');
 
+
+var dispLampesTV = document.getElementById('lampestv');
+var dispLampeGauche = document.getElementById('lampegauche');
+var dispLampeDroite = document.getElementById('lampedroite');
+var dispLampeBas = document.getElementById('lampebas');
+
+var dispTV = document.getElementById('tv');
+var dispChaine = document.getElementById('chaine');
+
+
 var type1 = "";
 var forme1 = "";
 var mouvement1 = "";
@@ -48,45 +58,23 @@ var liste_gestes = [
 	["CoupDePoingDroit","CoupDePoingGauche"],
 	["SwipeDroit"],
 	["SwipeGauche"],
+	/*
 	["RPSPoingBas","RPSPoingHaut","RPSPoingBas","RPSPoingHaut","RPSPoingBas"],
 	["RPSPoingBas","RPSPoingHaut","RPSPoingBas","RPSPoingHaut","RPSFeuille"],
 	["RPSPoingBas","RPSPoingHaut","RPSPoingBas","RPSPoingHaut","RPSCiseaux"],
+	*/
 	["SwipeBack"],
-	["PointeCurseurClic"]
-	/* // Analogiques
+	// ["PointeCurseurClic"],
+	["DPincerDroit"],["GPincerDroit"],
+	["DPincerGauche"],["GPincerGauche"],
+	["DPincerHaut"],["GPincerHaut"],
+	["DPincerBas"],["GPincerBas"]
+	/* 
+	// Analogiques
 	["PincerEtirement"],
 	["PointeCurseur"]
 	*/
 ];
-
-function GetSend (url,id,password){
-	let xhr = new XMLHttpRequest();
-	if(id || password){
-		xhr.open("GET",url,true,id,password);
-	} else xhr.open("GET",url,true);
-	xhr.send();
-	if (xhr.status < 400) {  
-		//le serveur a réussi à traiter la requête 
-        console.log(xhrHTML.value); 
-    } else { 
-        //affichage des informations sur l'échec du traitement de la requête 
-        console.error(xhrHTML.status + " " + xhrHTML.statusText); 
-    }
-
-    return xhr;
-}
-
-function LinkURLMotion (url,id,password,obj,fct){
-	let urlFunctionObj = {"tv" : { "on":"api/bravia/power/on","off":"api/bravia/power/off", "tf1" : "api/tv/channel/1", "fr2" : "api/tv/channel/2", "fr3" : "api/tv/channel/3", "m6" : "api/tv/channel/6", "arte" : "api/tv/channel/7", "c8" : "api/tv/channel/8", "w9" : "api/tv/channel/9", "bfm" : "api/tv/channel/15"}, "light1" : {"on":"api/lights/power/1/on","off":"api/lights/power/1/off"},"light2" : {"on":"api/lights/power/2/on","off":"api/lights/power/2/off"}};
-
-	if(obj in urlFunctionObj){
-		if(fct in urlFunctionObj[obj]){
-			let urlTempo = url+urlFunctionObj[obj].fct;
-			let xhr = GetSend(urlTempo,id,password);
-		}
-	}
-	return xhr;
-}
 
 var taille_liste_gestes = 0;
 for(let i = 0; i < liste_gestes.length; i++){
@@ -147,6 +135,23 @@ var typeMain = function(main){
 	}
 	return fre;
 };
+
+function GetSend (url,id,password){
+	let xhr = new XMLHttpRequest();
+	if(id || password){
+		xhr.open("GET",url,true,id,password);
+	} else xhr.open("GET",url,true);
+	xhr.send();
+	if (xhr.status < 400) {  
+		//le serveur a réussi à traiter la requête 
+        console.log(xhr.status); 
+    } else { 
+        //affichage des informations sur l'échec du traitement de la requête 
+        console.error(xhr.status + " " + xhr.statusText); 
+    }
+
+    return xhr;
+}
 			
 controller.on('frame', function(frame){
 	// Nombre de mains
@@ -202,7 +207,6 @@ controller.on('frame', function(frame){
 		}else{
 			geste1 = "";
 		}
-		
 	}else if(frame.hands.length == 1){ // Une main
 		main1 = frame.hands[0];
 		
@@ -233,20 +237,31 @@ controller.on('frame', function(frame){
 			geste1 = "SwipeGauche";
 		}else if(forme1 == "Main plate" && (main1.palmNormal[0] < -0.7 || main1.palmNormal[0] > 0.7) && main1.direction[2] < -0.7 && main1.palmVelocity[0] > 600){
 			geste1 = "SwipeDroit";
-		}else if( (previous1[previous1.length-1] == "" || previous1[previous1.length-1] == "RPSPoingBas") && forme1 == "Poing" && mouvement1 == "Vers le haut"){
+			
+		/*}else if( (previous1[previous1.length-1] == "" || previous1[previous1.length-1] == "RPSPoingBas") && forme1 == "Poing" && mouvement1 == "Vers le haut"){
 			geste1 = "RPSPoingHaut";
 		}else if(previous1[previous1.length-1] == "RPSPoingHaut" && forme1 == "Poing" && mouvement1 == "Vers le bas"){
 			geste1 = "RPSPoingBas";
 		}else if(previous1[previous1.length-1] == "RPSPoingHaut" && forme1 == "Main plate" && mouvement1 == "Vers le bas"){
 			geste1 = "RPSFeuille";
 		}else if(previous1[previous1.length-1] == "RPSPoingHaut" && forme1 == "Ciseaux" && mouvement1 == "Vers le bas"){
-			geste1 = "RPSCiseaux";
-		}else if( (previous1[previous1.length-1] == "" || previous1[previous1.length-1] == "PointeCurseur" || previous1[previous1.length-1] == "PointeCurseurClic") && forme1 == "Pointe" && main1.direction[2] < -0.8 && main1.palmPosition[2] < -50){ // (previous1[previous1.length-1] == "MetalFront" || (previous1[previous1.length-2] == "MetalFront" && previous1[previous1.length-1] == "PointeCurseur") ) && 
+			geste1 = "RPSCiseaux";*/
+			
+		/*}else if( (previous1[previous1.length-1] == "" || previous1[previous1.length-1] == "PointeCurseur" || previous1[previous1.length-1] == "PointeCurseurClic") && forme1 == "Pointe" && main1.direction[2] < -0.8 && main1.palmPosition[2] < -50){ // (previous1[previous1.length-1] == "MetalFront" || (previous1[previous1.length-2] == "MetalFront" && previous1[previous1.length-1] == "PointeCurseur") ) && 
 			geste1 = "PointeCurseurClic";
 		}else if( (previous1[previous1.length-1] == "" || previous1[previous1.length-1] == "PointeCurseur" || previous1[previous1.length-1] == "PointeCurseurClic") && forme1 == "Pointe" && main1.direction[2] < -0.8 && main1.palmPosition[2] > -50){ // (previous1[previous1.length-1] == "MetalFront" || (previous1[previous1.length-2] == "MetalFront" && previous1[previous1.length-1] == "PointeCurseur") ) && 
-			geste1 = "PointeCurseur";
-		}else if(forme1 == "Main plate" && main1.direction[2] < -0.4 && main1.direction[1] > 0.4 && main1.palmNormal[1] < -0.4 && main1.palmNormal[2] < -0.4 && main1.palmVelocity[1] > 800){ // (previous1[previous1.length-1] == "MetalFront" || (previous1[previous1.length-2] == "MetalFront" && previous1[previous1.length-1] == "PointeCurseur") ) && 
+			geste1 = "PointeCurseur";*/
+			
+		}else if(forme1 == "Main plate" && main1.direction[2] < -0.4 && main1.direction[1] > 0.4 && main1.palmNormal[1] > 0.4 && main1.palmNormal[2] > 0.4 && main1.palmVelocity[1] > 800){ // (previous1[previous1.length-1] == "MetalFront" || (previous1[previous1.length-2] == "MetalFront" && previous1[previous1.length-1] == "PointeCurseur") ) && 
 			geste1 = "SwipeBack";
+		}else if(forme1 == "Pincer" && main1.palmVelocity[0] > 800){ 
+			geste1 = (type1 == "Main Droite") ? "DPincerDroit" : "GPincerDroit";
+		}else if(forme1 == "Pincer" && main1.palmVelocity[0] < -800){ 
+			geste1 = (type1 == "Main Droite") ? "DPincerGauche" : "GPincerGauche";
+		}else if(forme1 == "Pincer" && main1.palmVelocity[1] > 800){ 
+			geste1 = (type1 == "Main Droite") ? "DPincerHaut" : "GPincerHaut";
+		}else if(forme1 == "Pincer" && main1.palmVelocity[1] < -800){ 
+			geste1 = (type1 == "Main Droite") ? "DPincerBas" : "GPincerBas";
 		}else{
 			geste1 = "";
 		}
@@ -263,8 +278,11 @@ controller.on('frame', function(frame){
 		geste1 = "";
 	}
 	// Determination gestuelle dynamique si le resultat precedant n'etait pas une fonction
-	
 	date = new Date();
+	
+	if(tstamp <= date.getTime()){
+		
+		
 	if(tstamp < date.getTime() - 1000){ // Si le dernier geste a ete opere plus de une seconde plus tot
 		for(let i = 0; i < previous1.length; i++){ // Reinit du buffer
 			previous1[i] = "";
@@ -292,17 +310,26 @@ controller.on('frame', function(frame){
 	}
 	
 	if(g_dynamique != ""){
+		tstamp = date.getTime() + 1000;
 		if(g_dynamique == ["PalmeFaceGauche","PalmeFaceDroite","PalmeFaceGauche"].toString()){
 			dispAction.innerText = "Action Coucou";
-			url = 'http://www.mozilla.org/';
 		}else if(g_dynamique == "JUL"){
 			dispAction.innerText = "OVNI";
 		}else if(g_dynamique == "PoussePlat"){
 			dispAction.innerText = "Action Poussee";
+			dispTV.style.background = "green";
 		}else if(g_dynamique == ["PoingHautFerme","PoingHautOuvert"]){
 			dispAction.innerText = "Action Allume";
+			dispLampesTV.style.background = "green";
+			dispLampeGauche.style.background = "green";
+			dispLampeDroite.style.background = "green";
+			//GetSend("https://10.34.168.135/api/allLights/on/",null,null);
 		}else if(g_dynamique == ["PoingHautOuvert","PoingHautFerme"]){
 			dispAction.innerText = "Action Eteindre";
+			dispLampesTV.style.background = "red";
+			dispLampeGauche.style.background = "red";
+			dispLampeDroite.style.background = "red";
+			//GetSend("https://1.34.168.135/api/allLights/off/",null,null);
 		}else if(g_dynamique == ["CoupDePoingGauche","CoupDePoingDroit"].toString() || g_dynamique == ["CoupDePoingDroit","CoupDePoingGauche"].toString()){
 			dispAction.innerText = "Action Rocky";
 		}else if(g_dynamique == "SwipeGauche"){
@@ -311,16 +338,47 @@ controller.on('frame', function(frame){
 			dispAction.innerText = "Action Swipe Droit";
 		}else if(g_dynamique == "SwipeBack"){
 			dispAction.innerText = "Action Swipe Back";
+			dispTV.style.background = "red";
+			
+		}else if(g_dynamique == "DPincerDroit"){
+			dispAction.innerText = "Main Droite Pincement Droit";
+		}else if(g_dynamique == "DPincerGauche"){
+			dispAction.innerText = "Main Droite Pincement Gauche";
+		}else if(g_dynamique == "DPincerHaut"){
+			dispAction.innerText = "Main Droite Pincement Haut";
+			dispLampesTV.style.background = "gray";
+			dispLampeDroite.style.background = "green";
+		}else if(g_dynamique == "DPincerBas"){
+			dispAction.innerText = "Main Droite Pincement Bas";
+			dispLampesTV.style.background = "gray";
+			dispLampeDroite.style.background = "red";
+			
+		}else if(g_dynamique == "GPincerDroit"){
+			dispAction.innerText = "Main Gauche Pincement Droit";
+		}else if(g_dynamique == "GPincerGauche"){
+			dispAction.innerText = "Main Gauche Pincement Gauche";
+		}else if(g_dynamique == "GPincerHaut"){
+			dispAction.innerText = "Main Gauche Pincement Haut";
+			dispLampesTV.style.background = "gray";
+			dispLampeGauche.style.background = "green";
+		}else if(g_dynamique == "GPincerBas"){
+			dispAction.innerText = "Main Gauche Pincement Bas";
+			dispLampesTV.style.background = "gray";
+			dispLampeGauche.style.background = "red";
+			
 		}else if(g_dynamique == "MetalFront"){
 			dispAction.innerText = "Action Metal";
-		}else if(g_dynamique == ["RPSPoingBas","RPSPoingHaut","RPSPoingBas","RPSPoingHaut","RPSPoingBas"].toString()){
+			
+		/*}else if(g_dynamique == ["RPSPoingBas","RPSPoingHaut","RPSPoingBas","RPSPoingHaut","RPSPoingBas"].toString()){
 			dispAction.innerText = "Action RPS Pierre";
 		}else if(g_dynamique == ["RPSPoingBas","RPSPoingHaut","RPSPoingBas","RPSPoingHaut","RPSFeuille"].toString()){
 			dispAction.innerText = "Action RPS Feuille";
 		}else if(g_dynamique == ["RPSPoingBas","RPSPoingHaut","RPSPoingBas","RPSPoingHaut","RPSCiseaux"].toString()){
-			dispAction.innerText = "Action RPS Ciseaux";
-		}else if(g_dynamique == "PointeCurseurClic"){
-			dispAction.innerText = "Action Clic    : [ " + main1.palmPosition[0] + " , " + main1.palmPosition[1] + "]";
+			dispAction.innerText = "Action RPS Ciseaux";*/
+			
+		/*}else if(g_dynamique == "PointeCurseurClic"){
+			dispAction.innerText = "Action Clic    : [ " + main1.palmPosition[0] + " , " + main1.palmPosition[1] + "]";*/
+			
 		}
 	}
 	
@@ -337,9 +395,14 @@ controller.on('frame', function(frame){
 		}
 		dispAction.innerText = "Action Etirement : Niveau " + temp + "%";
 		tstamp = date.getTime();
-	}else if(geste1 == "PointeCurseur"){
+		
+	/*}else if(geste1 == "PointeCurseur"){
 		dispAction.innerText = "Action Curseur : [ " + main1.palmPosition[0] + " , " + main1.palmPosition[1] + "]";
-		tstamp = date.getTime();
+		tstamp = date.getTime();*/
+		
+	}
+	
+	
 	}
 	
 	dispType.innerText = type1;
@@ -355,6 +418,19 @@ controller.on('frame', function(frame){
 	dispTest1.innerText = previous1;
 	dispTest2.innerText = tstamp + " et " + date.getTime();
 	
+	/*if(url != ""){
+		//const request = new Request('https://example.com', {method: 'POST', body: '{"foo": "bar"}'});
+		
+		var requete = new XMLHttpRequest();
+		requete.open('GET', url, false); 
+		requete.send(null);
+	
+		if (requete.status === 200) {
+			console.log("Réponse reçue: %s", requete.responseText);
+		} else {
+			console.log("Erreur: %s", this.statusText);
+		}
+	}*/
 });
 
 controller.connect();
