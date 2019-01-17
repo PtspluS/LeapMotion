@@ -4,9 +4,20 @@
 	
 	<head>
 		<script src="leap-0.6.4.js"></script>
+		<style>
+			body > div{
+				display: inline-block;
+				width: 40%;
+				float: left;
+			}
+			.bloc{
+				background-color: red;
+			}
+		</style>
 	</head>
 	
 	<body>
+	<div>
 		<p>Nombre de Mains : <span id="mains">OUI</span></p>
 		
 		<h1>Derniere Action : <span id="action">OUI</span></h1>
@@ -36,8 +47,19 @@
 			<br />
 			Test 2 : <span id="test2">OUI</span>
 		</p>
+	</div>
+	
+	<div>
+		<div class="bloc" id="lampestv" >Lampes Television</div>
+		<div class="bloc" id="lampegauche" >Lampe TV gauche </div>
+		<div class="bloc" id="lampedroite" >Lampe TV droite</div>
+		<div class="bloc" id="lampebas" >Lampe TV Bas</div>
+		<br />
+		<div class="bloc" id="tv" >Television</div>
+		<div>Chaine Television : <span id="chaine" ></span></div>
+	</div>
+	
 <script src="main.js" ></script>
-<script src="url.js"></script>
 	</body>
 	
 </html>
