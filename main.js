@@ -1,5 +1,7 @@
 var path = "http://10.34.168.140/";
 
+var chaines = ["tf1", "fr2", "fr3", "m6", "arte", "c8", "w9", "bfm"];
+
 var controller = new Leap.Controller({
                          enableGestures: true,
                          frameEventName: 'animationFrame'
