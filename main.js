@@ -321,20 +321,10 @@ controller.on('frame', function(frame){
 			dispAction.innerText = "OVNI";
 		}else if(g_dynamique == "PoussePlat"){
 			dispAction.innerText = "Action Poussee";
-			dispTV.style.background = "green";
-			LinkURLMotion("tv","on");
 		}else if(g_dynamique == ["PoingHautFerme","PoingHautOuvert"]){
 			dispAction.innerText = "Action Allume";
-			dispLampesTV.style.background = "green";
-			dispLampeGauche.style.background = "green";
-			dispLampeDroite.style.background = "green";
-			LinkURLMotion("allLights","on");
 		}else if(g_dynamique == ["PoingHautOuvert","PoingHautFerme"]){
 			dispAction.innerText = "Action Eteindre";
-			dispLampesTV.style.background = "red";
-			dispLampeGauche.style.background = "red";
-			dispLampeDroite.style.background = "red";
-			LinkURLMotion("allLights","off");
 		}else if(g_dynamique == ["CoupDePoingGauche","CoupDePoingDroit"].toString() || g_dynamique == ["CoupDePoingDroit","CoupDePoingGauche"].toString()){
 			dispAction.innerText = "Action Rocky";
 		}else if(g_dynamique == "SwipeGauche"){
@@ -349,39 +339,6 @@ controller.on('frame', function(frame){
 			LinkURLMotion("tv",chaines[chainesCursor]);
 		}else if(g_dynamique == "SwipeBack"){
 			dispAction.innerText = "Action Swipe Back";
-			dispTV.style.background = "red";
-			LinkURLMotion("tv","off");
-
-		}else if(g_dynamique == "DPincerDroit"){
-			dispAction.innerText = "Main Droite Pincement Droit";
-		}else if(g_dynamique == "DPincerGauche"){
-			dispAction.innerText = "Main Droite Pincement Gauche";
-		}else if(g_dynamique == "DPincerHaut"){
-			dispAction.innerText = "Main Droite Pincement Haut";
-			dispLampesTV.style.background = "gray";
-			dispLampeDroite.style.background = "green";
-			LinkURLMotion("light1","on");
-		}else if(g_dynamique == "DPincerBas"){
-			dispAction.innerText = "Main Droite Pincement Bas";
-			dispLampesTV.style.background = "gray";
-			dispLampeDroite.style.background = "red";
-			LinkURLMotion("light1","off");
-			
-		}else if(g_dynamique == "GPincerDroit"){
-			dispAction.innerText = "Main Gauche Pincement Droit";
-		}else if(g_dynamique == "GPincerGauche"){
-			dispAction.innerText = "Main Gauche Pincement Gauche";
-		}else if(g_dynamique == "GPincerHaut"){
-			dispAction.innerText = "Main Gauche Pincement Haut";
-			dispLampesTV.style.background = "gray";
-			dispLampeGauche.style.background = "green";
-			LinkURLMotion("light2","on");
-		}else if(g_dynamique == "GPincerBas"){
-			dispAction.innerText = "Main Gauche Pincement Bas";
-			dispLampesTV.style.background = "gray";
-			dispLampeGauche.style.background = "red";
-			LinkURLMotion("light2","off");
-			
 		}else if(g_dynamique == "MetalFront"){
 			dispAction.innerText = "Action Metal";
 			
@@ -399,7 +356,7 @@ controller.on('frame', function(frame){
 	}
 	
 	// Gestes Analogiques
-	if(geste1 == "PincerEtirement"){
+		if(geste1 == "PincerEtirement"){
 		let temp = 0;
 		let temp2 = main2.palmPosition[0] - main1.palmPosition[0] - 150;
 		if(temp2 > 0 && temp2 < 400){
