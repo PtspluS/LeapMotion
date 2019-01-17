@@ -75,7 +75,7 @@ function GetSend (url,id,password){
 }
 
 function LinkURLMotion (url,id,password,obj,fct){
-	let urlFunctionObj = {"tv" : { "on":"api/bravia/power/on","off":"api/bravia/power/off", "tf1" : "api/tv/channel/1", "fr2" : "api/tv/channel/2", "fr3" : "api/tv/channel/3", "m6" : "api/tv/channel/6", "arte" : "api/tv/channel/7", "c8" : "api/tv/channel/8", "w9" : "api/tv/channel/9", "bfm" : "api/tv/channel/15"}, "light1" : {"on":"function1","off":"function2"},"light2" : {"on":"api/lights/power/2/on","off":"api/lights/power/2/off"}};
+	let urlFunctionObj = {"tv" : { "on":"api/bravia/power/on","off":"api/bravia/power/off", "tf1" : "api/tv/channel/1", "fr2" : "api/tv/channel/2", "fr3" : "api/tv/channel/3", "m6" : "api/tv/channel/6", "arte" : "api/tv/channel/7", "c8" : "api/tv/channel/8", "w9" : "api/tv/channel/9", "bfm" : "api/tv/channel/15"}, "light1" : {"on":"api/lights/power/1/on","off":"api/lights/power/1/off"},"light2" : {"on":"api/lights/power/2/on","off":"api/lights/power/2/off"}};
 
 	if(obj in urlFunctionObj){
 		if(fct in urlFunctionObj[obj]){
