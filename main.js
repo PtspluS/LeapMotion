@@ -72,7 +72,7 @@ var liste_gestes = [
 	["DPincerHaut"],["GPincerHaut"],
 	["DPincerBas"],["GPincerBas"]
 	/* 
-	// Analogiques
+	// Analogiques a ne pas mettre parmi les autres gestes car celui-ci doit etre reinitialise afin de ne pas avoir de temps avant le prochain geste
 	["PincerEtirement"],
 	["PointeCurseur"]
 	*/
@@ -86,6 +86,7 @@ for(let i = 0; i < taille_liste_gestes; i++){
 	previous1.push("");
 }
 
+// Fonction retournant la forme generale d'une main
 var formeMain = function(main){
 	let fre;
 	if(main.thumb.extended && main.indexFinger.extended && main.middleFinger.extended && main.ringFinger.extended && main.pinky.extended && main.grabStrength <= 0){
@@ -108,6 +109,7 @@ var formeMain = function(main){
 	return fre;
 };
 
+// Fonction retournant le sens de mouvement d'une main (avec une velocite de 400mm a la seconde)
 var mouvementMain = function(main){
 	let fre;	
 	if(main.palmVelocity[0] < -400){
@@ -128,6 +130,7 @@ var mouvementMain = function(main){
 	return fre;
 };
 
+// Fonction retournant le 'type' d'une main (main droite ou main gauche)
 var typeMain = function(main){
 	let fre;
 	if(main.type == "right"){
@@ -138,11 +141,13 @@ var typeMain = function(main){
 	return fre;
 };
 
+// Fonction envoyant une requete a une url
 function GetSend (url){
 	let xhr = new XMLHttpRequest();
 	xhr.open("GET",url,true);
 	xhr.send();
 
+	// Si on evoie la requete dans une autre fenetre
    // window.open(url,"Envoi")
 }
 
@@ -151,7 +156,7 @@ function LinkURLMotion (obj,fct){
 	if(obj in urlFunctionObj){
 		if(fct in urlFunctionObj[obj]){
 			let urlTempo = urlFunctionObj[obj][fct];
-			console.log(urlFunctionObj[obj][fct]);
+			console.log(urlTempo);
 			GetSend(urlTempo);
 		}
 	}
@@ -160,8 +165,6 @@ function LinkURLMotion (obj,fct){
 controller.on('frame', function(frame){
 	// Nombre de mains
 	dispMains.innerText = frame.hands.length;
-	
-	var url = "";
 	
 	main1 = undefined;
 	main2 = undefined;
@@ -321,10 +324,20 @@ controller.on('frame', function(frame){
 			dispAction.innerText = "OVNI";
 		}else if(g_dynamique == "PoussePlat"){
 			dispAction.innerText = "Action Poussee";
+			LinkURLMotion("tv","on");
+			dispTV.style.background = "green";
 		}else if(g_dynamique == ["PoingHautFerme","PoingHautOuvert"]){
 			dispAction.innerText = "Action Allume";
+			LinkURLMotion("allLights","on");
+			dispLampesTV.style.background = "green";
+			dispLampeGauche.style.background = "green";
+			dispLampeDroite.style.background = "green";
 		}else if(g_dynamique == ["PoingHautOuvert","PoingHautFerme"]){
 			dispAction.innerText = "Action Eteindre";
+			LinkURLMotion("allLights","off");
+			dispLampesTV.style.background = "red";
+			dispLampeGauche.style.background = "red";
+			dispLampeDroite.style.background = "red";
 		}else if(g_dynamique == ["CoupDePoingGauche","CoupDePoingDroit"].toString() || g_dynamique == ["CoupDePoingDroit","CoupDePoingGauche"].toString()){
 			dispAction.innerText = "Action Rocky";
 		}else if(g_dynamique == "SwipeGauche"){
@@ -339,8 +352,40 @@ controller.on('frame', function(frame){
 			LinkURLMotion("tv",chaines[chainesCursor]);
 		}else if(g_dynamique == "SwipeBack"){
 			dispAction.innerText = "Action Swipe Back";
+			LinkURLMotion("tv","off");
+			dispTV.style.background = "red";
 		}else if(g_dynamique == "MetalFront"){
 			dispAction.innerText = "Action Metal";
+			
+		}else if(g_dynamique == "GPincerBas"){
+			dispAction.innerText = "Main gauche pincement bas";
+			LinkURLMotion("light1","off");
+			dispLampesTV.style.background = "grey";
+			dispLampeGauche.style.background = "red";
+		}else if(g_dynamique == "GPincerHaut"){
+			dispAction.innerText = "Main gauche pincement haut";
+			LinkURLMotion("light1","on");
+			dispLampesTV.style.background = "grey";
+			dispLampeGauche.style.background = "green";
+		}else if(g_dynamique == "GPincerGauche"){
+			dispAction.innerText = "Main gauche pincement gauche";
+		}else if(g_dynamique == "GPincerDroit"){
+			dispAction.innerText = "Main gauche pincement droit";
+			
+		}else if(g_dynamique == "DPincerBas"){
+			dispAction.innerText = "Main droite pincement bas";
+			LinkURLMotion("light2","off");
+			dispLampesTV.style.background = "grey";
+			dispLampeDroite.style.background = "red";
+		}else if(g_dynamique == "DPincerHaut"){
+			dispAction.innerText = "Main droite pincement haut";
+			LinkURLMotion("light2","on");
+			dispLampesTV.style.background = "grey";
+			dispLampeDroite.style.background = "green";
+		}else if(g_dynamique == "DPincerGauche"){
+			dispAction.innerText = "Main droite pincement gauche";
+		}else if(g_dynamique == "DPincerDroit"){
+			dispAction.innerText = "Main droite pincement droit";
 			
 		/*}else if(g_dynamique == ["RPSPoingBas","RPSPoingHaut","RPSPoingBas","RPSPoingHaut","RPSPoingBas"].toString()){
 			dispAction.innerText = "Action RPS Pierre";
@@ -348,9 +393,6 @@ controller.on('frame', function(frame){
 			dispAction.innerText = "Action RPS Feuille";
 		}else if(g_dynamique == ["RPSPoingBas","RPSPoingHaut","RPSPoingBas","RPSPoingHaut","RPSCiseaux"].toString()){
 			dispAction.innerText = "Action RPS Ciseaux";*/
-			
-		/*}else if(g_dynamique == "PointeCurseurClic"){
-			dispAction.innerText = "Action Clic    : [ " + main1.palmPosition[0] + " , " + main1.palmPosition[1] + "]";*/
 			
 		}
 	}
@@ -368,14 +410,16 @@ controller.on('frame', function(frame){
 		}
 		dispAction.innerText = "Action Etirement : Niveau " + temp + "%";
 		tstamp = date.getTime();
-		
-	/*}else if(geste1 == "PointeCurseur"){
+	
+	/*
+	}else if(geste1 == "PointeCurseur"){
 		dispAction.innerText = "Action Curseur : [ " + main1.palmPosition[0] + " , " + main1.palmPosition[1] + "]";
-		tstamp = date.getTime();*/
+		tstamp = date.getTime();
 		
-	}
-	
-	
+	}else if(geste1 == "PointeCurseurClic"){
+		dispAction.innerText = "Action Clic    : [ " + main1.palmPosition[0] + " , " + main1.palmPosition[1] + "]";
+		tstamp = date.getTime();
+	*/
 	}
 	
 	dispType.innerText = type1;
@@ -390,20 +434,6 @@ controller.on('frame', function(frame){
 	
 	dispTest1.innerText = previous1;
 	dispTest2.innerText = tstamp + " et " + date.getTime();
-	
-	/*if(url != ""){
-		//const request = new Request('https://example.com', {method: 'POST', body: '{"foo": "bar"}'});
-		
-		var requete = new XMLHttpRequest();
-		requete.open('GET', url, false); 
-		requete.send(null);
-	
-		if (requete.status === 200) {
-			console.log("Réponse reçue: %s", requete.responseText);
-		} else {
-			console.log("Erreur: %s", this.statusText);
-		}
-	}*/
 });
 
 controller.connect();
