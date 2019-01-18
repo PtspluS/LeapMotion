@@ -398,7 +398,7 @@ controller.on('frame', function(frame){
 	}
 	
 	// Gestes Analogiques
-	if(geste1 == "PincerEtirement"){
+		if(geste1 == "PincerEtirement"){
 		let temp = 0;
 		let temp2 = main2.palmPosition[0] - main1.palmPosition[0] - 150;
 		if(temp2 > 0 && temp2 < 400){
